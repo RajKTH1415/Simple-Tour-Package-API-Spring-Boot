@@ -5,6 +5,9 @@ import com.backendapi.simpletourpackageapi.dtos.TourResponse;
 import com.backendapi.simpletourpackageapi.model.Tour;
 import com.backendapi.simpletourpackageapi.repository.TourRepository;
 import com.backendapi.simpletourpackageapi.service.TourServiceInterface;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,23 +80,26 @@ public class TourServiceImpl implements TourServiceInterface {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TourResponse> findAll() {
-        List<TourResponse> list = new ArrayList<>();
-        for (Tour t : tourRepository.findAll()) {
-            list.add(new TourResponse(
-                    t.getId(),
-                    t.getTitle(),
-                    t.getDescription(),
-                    t.getImageUrl(),
-                    t.getDurationDays() + "Days/" + t.getDurationNights() + "Nights",
-                    "$" + t.getActualPrice(),
-                    t.getDiscountPercent() + "%",
-                    "$" + t.getDiscountedPrice(),
-                    t.getCurrency(),
-                    t.getCreatedAt().toString()
-            ));
+    public Page<TourResponse> findAll(Pageable pageable) {
+
+        Page<Tour> page = tourRepository.findAll(Pageable.unpaged());
+        List<TourResponse> tourResponseList = new ArrayList<>();
+        for (Tour t : page.getContent()) {
+            TourResponse tr = new TourResponse();
+            tr.setId(t.getId());
+            tr.setTitle(t.getTitle());
+            tr.setDescription(t.getDescription());
+            tr.setImage(t.getImageUrl());
+            tr.setDuration(t.getDurationDays() + "Days/" + t.getDurationNights() + "Nights");
+            tr.setActualPrice("$" + t.getActualPrice());
+            tr.setDiscountInPercentage(t.getDiscountPercent() + "%");
+            tr.setDiscountedPrice("$" + t.getDiscountedPrice());
+            tr.setCurrency(t.getCurrency());
+            tr.setCreatedAt(t.getCreatedAt().toString());
+
+            tourResponseList.add(tr);
         }
-        return list;
+        return new PageImpl<>(tourResponseList, pageable, page.getTotalElements());
     }
 
     @Transactional(readOnly = true)

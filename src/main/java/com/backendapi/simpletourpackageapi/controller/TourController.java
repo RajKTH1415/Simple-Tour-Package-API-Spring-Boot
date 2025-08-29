@@ -5,6 +5,8 @@ import com.backendapi.simpletourpackageapi.dtos.TourRequest;
 import com.backendapi.simpletourpackageapi.dtos.TourResponse;
 import com.backendapi.simpletourpackageapi.service.Impl.TourServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +32,10 @@ public class TourController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TourResponse>>> getAllTour() {
-        List<TourResponse> list = tourService.findAll();
-        ApiResponse<List<TourResponse>> response = new ApiResponse<>(true, "Tours fetched successfully", list);
+    public ResponseEntity<ApiResponse<List<TourResponse>>> getAllTour( @RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size) {
+        Page<TourResponse> list = tourService.findAll(PageRequest.of(page, size));
+        ApiResponse<List<TourResponse>> response = new ApiResponse<>(true, "Tours fetched successfully", list.getContent());
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
