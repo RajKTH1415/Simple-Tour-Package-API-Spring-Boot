@@ -119,5 +119,5 @@ public class TourServiceImpl implements TourServiceInterface {
                 t.getCreatedAt().toString()
         );
     }
-    }
+}
 

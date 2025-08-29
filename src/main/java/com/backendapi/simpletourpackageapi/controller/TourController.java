@@ -28,9 +28,7 @@ public class TourController {
         TourResponse res = tourService.create(tourRequest);
         ApiResponse<TourResponse> response = new ApiResponse<>(true, "Tour created successfully", res);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-
     }
-
     @GetMapping
     public ResponseEntity<ApiResponse<List<TourResponse>>> getAllTour( @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size) {
