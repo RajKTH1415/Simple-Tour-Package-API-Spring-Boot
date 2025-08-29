@@ -7,10 +7,9 @@ import com.backendapi.simpletourpackageapi.service.Impl.TourServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tours")
@@ -27,6 +26,23 @@ public class TourController {
         TourResponse res = tourService.create(tourRequest);
         ApiResponse<TourResponse> response = new ApiResponse<>(true, "Tour created successfully", res);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<TourResponse>>> getAllTour() {
+        List<TourResponse> list = tourService.findAll();
+        ApiResponse<List<TourResponse>> response = new ApiResponse<>(true, "Tours fetched successfully", list);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<TourResponse>> getTourById(@PathVariable Long id) {
+        TourResponse res = tourService.findById(id);
+        ApiResponse<TourResponse> response = new ApiResponse<>(true, "Tour fetched successfully", res);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
 
     }
 }
