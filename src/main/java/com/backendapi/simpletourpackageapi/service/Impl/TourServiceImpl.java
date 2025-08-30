@@ -82,7 +82,7 @@ public class TourServiceImpl implements TourServiceInterface {
     @Override
     public Page<TourResponse> findAll(Pageable pageable) {
 
-        Page<Tour> page = tourRepository.findAll(Pageable.unpaged());
+        Page<Tour> page = tourRepository.findAll(pageable);
         List<TourResponse> tourResponseList = new ArrayList<>();
         for (Tour t : page.getContent()) {
             TourResponse tr = new TourResponse();
